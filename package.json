@@ -1,0 +1,31 @@
+{
+  "name": "@panda-clouds/docker-machine",
+  "scripts": {
+    "pretest": "eslint .",
+    "test": "jest"
+  },
+  "description": "allows the use of docker-machine from node",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panda-clouds/docker-machine.git"
+  },
+  "author": {
+    "name": "Marc Smith",
+    "email": "mr.marcsmith@me.com",
+    "url": "https://github.com/mrmarcsmith"
+  },
+  "license": "MIT",
+  "main": "src/PCDockerMachine.js",
+  "engines": {
+    "node": ">= 8"
+  },
+  "dependencies": {
+    "execa": "^1.0.0"
+  },
+  "devDependencies": {
+    "@panda-clouds/eslint-config-panda-clouds": "^0.9.0",
+    "jest": "^24.1.0",
+    "eslint": "^5.14.1"
+  }
+}
