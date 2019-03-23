@@ -30,16 +30,17 @@ const PCDockerMachine = require('@panda-clouds/docker-machine');
 const options = {};
 options['digitalocean-access-token'] = '< my DigitalOcean Token >';
 
+// Create the machine on Digital Ocean
 const machine = await DockerMachine.create('machine-test', 'digitalocean', options);
 
-const status = await machine.status() // => 'Running'
-const IPv4 = await machine.getIPv4()  // => '123.234.321.21'
-const allMachines = await Machine.ls()// => [{'name':'machine-test'...},{'name':'other-machine'...}]
+const status = await machine.status();  // => 'Running'
+const IPv4 = await machine.getIPv4();   // => '123.234.321.21'
+const allMachines = await Machine.ls(); // => [{'name':'machine-test'...},{'name':'other-machine'...}]
 
-// Destroy the machine 
+// Destroy the machine $4975 $388 $10.13 -$500 = $4873.18 <<<<<<<<< $4935 348 10 = $4830.06
 await machine.destroy();
 
-const status = await machine.status() // => 'Machine Not Found'
+const status = await machine.status(); // => 'Machine Not Found'
 ```
 
 You can replace PCDockerMachine with any variable.
