@@ -37,7 +37,7 @@ const status = await machine.status();  // => 'Running'
 const IPv4 = await machine.getIPv4();   // => '123.234.321.21'
 const allMachines = await Machine.ls(); // => [{'name':'machine-test'...},{'name':'other-machine'...}]
 
-// Destroy the machine $4975 $388 $10.13 -$500 = $4873.18 <<<<<<<<< $4935 348 10 = $4830.06
+// Destroy the machine 
 await machine.destroy();
 
 const status = await machine.status(); // => 'Machine Not Found'
