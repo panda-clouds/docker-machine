@@ -1,15 +1,14 @@
 const execa = require('execa');
-const kMissingMachineNameError = 'Please pass a machine name to the DockerMachine constructor';
 const kMissingProviderError = 'Please pass a provider';
 const kMachineNotFound = 'Machine Not Found';
 
 class DockerMachine {
 	constructor(name) {
 		if (!name) {
-			throw new Error(kMissingMachineNameError);
+			this.machineName = randomString(10);
+		} else {
+			this.machineName = name;
 		}
-
-		this.machineName = name;
 	}
 
 	static async create(name, provider, options) {
@@ -36,20 +35,12 @@ class DockerMachine {
 		const allRaw = results.split('END_OF_OBJECT');
 		const all = [];
 
-		console.log('hi (' + allRaw + ')');
-
 		if (allRaw && allRaw.length > 0) {
 			for (let i = allRaw.length - 1; i >= 0; i--) {
 				const one = allRaw[i];
 
-				console.log('before (' + one + ')' + typeof one);
-
 				if (one && one.length > 1) {
-					console.log('in (' + one + ')' + typeof one);
-
 					all.push(JSON.parse(one));
-
-					console.log('after (' + one + ')' + typeof one);
 				}
 			}
 
@@ -103,7 +94,7 @@ class DockerMachine {
 	}
 
 	static async run(command) {
-		const result = await execa.shell(command);
+		const result = await execa.shell(command, { shell: '/bin/bash' });
 
 		if (result.failed) {
 			throw new Error(result.stderr);
@@ -114,3 +105,15 @@ class DockerMachine {
 }
 
 module.exports = DockerMachine;
+
+function randomString(length) {
+	const letters = 'abcdefghijklmnopqrstuvwxyz';
+	let text = letters.charAt(Math.floor(Math.random() * letters.length));
+	const lettersAndNumbers = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+	for (let i = 0; i < length - 1; i++) {
+		text += lettersAndNumbers.charAt(Math.floor(Math.random() * lettersAndNumbers.length));
+	}
+
+	return text;
+}

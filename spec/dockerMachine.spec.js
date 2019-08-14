@@ -23,19 +23,16 @@ describe('test docker machine', () => {
 			await DockerMachine.run('exit 12');
 			expect(1).toBe(2);
 		} catch (e) {
-			expect(e.message).toContain('Command failed: /bin/sh -c exit 12');
+			expect(e.message).toContain('Command failed: /bin/bash -c exit 12');
 		}
 	});
 
-	it('should fail status without name', () => {
+	it('should autofill a random 10 charater name', () => {
 		expect.assertions(1);
 
-		try {
-			new DockerMachine();
-			expect(1).toBe(2);
-		} catch (e) {
-			expect(e.message).toBe('Please pass a machine name to the DockerMachine constructor');
-		}
+		const machine = new DockerMachine();
+
+		expect(machine.machineName).toHaveLength(10);
 	});
 
 	it('should fail status without machine', async () => {
