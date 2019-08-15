@@ -1,6 +1,6 @@
-const execa = require('execa');
 const kMissingProviderError = 'Please pass a provider';
 const kMachineNotFound = 'Machine Not Found';
+const PCBash = require('@panda-clouds/parse-bash');
 
 class DockerMachine {
 	constructor(name) {
@@ -9,6 +9,10 @@ class DockerMachine {
 		} else {
 			this.machineName = name;
 		}
+	}
+
+	name() {
+		return this.machineName;
 	}
 
 	static async create(name, provider, options) {
@@ -25,13 +29,13 @@ class DockerMachine {
 		}
 		command += name + '\n';
 
-		await DockerMachine.run(command);
+		await PCBash.run(command);
 
 		return new DockerMachine(name);
 	}
 
 	static async ls() {
-		const results = await DockerMachine.run('docker-machine ls --format "{\\"name\\":\\"{{.Name}}\\",\\"active\\":\\"{{.Active}}\\",\\"activeHost\\":\\"{{.ActiveHost}}\\",\\"activeSwarm\\":\\"{{.ActiveSwarm}}\\",\\"driverName\\":\\"{{.DriverName}}\\",\\"state\\":\\"{{.State}}\\",\\"url\\":\\"{{.URL}}\\",\\"swarm\\":\\"{{.Swarm}}\\",\\"error\\":\\"{{.Error}}\\",\\"dockerVersion\\":\\"{{.DockerVersion}}\\",\\"responseTime\\":\\"{{.ResponseTime}}\\"}END_OF_OBJECT"');
+		const results = await PCBash.run('docker-machine ls --format "{\\"name\\":\\"{{.Name}}\\",\\"active\\":\\"{{.Active}}\\",\\"activeHost\\":\\"{{.ActiveHost}}\\",\\"activeSwarm\\":\\"{{.ActiveSwarm}}\\",\\"driverName\\":\\"{{.DriverName}}\\",\\"state\\":\\"{{.State}}\\",\\"url\\":\\"{{.URL}}\\",\\"swarm\\":\\"{{.Swarm}}\\",\\"error\\":\\"{{.Error}}\\",\\"dockerVersion\\":\\"{{.DockerVersion}}\\",\\"responseTime\\":\\"{{.ResponseTime}}\\"}END_OF_OBJECT"');
 		const allRaw = results.split('END_OF_OBJECT');
 		const all = [];
 
@@ -43,15 +47,13 @@ class DockerMachine {
 					all.push(JSON.parse(one));
 				}
 			}
-
-			return all;
 		}
 
-		return [];
+		return all;
 	}
 
 	static async lsPretty() {
-		const results = await DockerMachine.run('docker-machine ls --format "{\n\\"name\\":\\"{{.Name}}\\",\n\\"active\\":\\"{{.Active}}\\",\n\\"activeHost\\":\\"{{.ActiveHost}}\\",\n\\"activeSwarm\\":\\"{{.ActiveSwarm}}\\",\n\\"driverName\\":\\"{{.DriverName}}\\",\n\\"state\\":\\"{{.State}}\\",\n\\"url\\":\\"{{.URL}}\\",\n\\"swarm\\":\\"{{.Swarm}}\\",\n\\"error\\":\\"{{.Error}}\\",\n\\"dockerVersion\\":\\"{{.DockerVersion}}\\",\n\\"responseTime\\":\\"{{.ResponseTime}}\\"\n}END_OF_OBJECT"');
+		const results = await PCBash.run('docker-machine ls --format "{\n\\"name\\":\\"{{.Name}}\\",\n\\"active\\":\\"{{.Active}}\\",\n\\"activeHost\\":\\"{{.ActiveHost}}\\",\n\\"activeSwarm\\":\\"{{.ActiveSwarm}}\\",\n\\"driverName\\":\\"{{.DriverName}}\\",\n\\"state\\":\\"{{.State}}\\",\n\\"url\\":\\"{{.URL}}\\",\n\\"swarm\\":\\"{{.Swarm}}\\",\n\\"error\\":\\"{{.Error}}\\",\n\\"dockerVersion\\":\\"{{.DockerVersion}}\\",\n\\"responseTime\\":\\"{{.ResponseTime}}\\"\n}END_OF_OBJECT"');
 
 		const formatted = '[' + results.split('END_OF_OBJECT').join(',') + ']';
 		const formatted2 = formatted.split('},]').join('}]');
@@ -61,7 +63,7 @@ class DockerMachine {
 
 	async status() {
 		try {
-			const results = await DockerMachine.run('docker-machine status ' + this.machineName);
+			const results = await PCBash.run('docker-machine status ' + this.machineName);
 
 			return results;
 		} catch (e) {
@@ -70,38 +72,28 @@ class DockerMachine {
 	}
 
 	async destroy() {
-		const results = await DockerMachine.run('docker-machine rm -f ' + this.machineName);
+		const results = await PCBash.run('docker-machine rm -f ' + this.machineName);
 
 		return results;
 	}
 
 	async getIPv4() {
-		const results = await DockerMachine.run('docker-machine ip ' + this.machineName);
+		const results = await PCBash.run('docker-machine ip ' + this.machineName);
 
 		return results;
 	}
 
 	async getPrivateKey() {
-		const results = await DockerMachine.run('cat $(docker-machine inspect --format=\'{{.Driver.SSHKeyPath}}\' ' + this.machineName + ')');
+		const results = await PCBash.run('cat $(docker-machine inspect --format=\'{{.Driver.SSHKeyPath}}\' ' + this.machineName + ')');
 
 		return results;
 	}
 
-	async generateJoinKey() {
-		const results = await DockerMachine.run('docker-machine ssh ' + this.machineName + ' ');
+	// async generateJoinKey() {
+	// 	const results = await PCBash.run('docker-machine ssh ' + this.machineName + ' ');
 
-		return results;
-	}
-
-	static async run(command) {
-		const result = await execa.shell(command, { shell: '/bin/bash' });
-
-		if (result.failed) {
-			throw new Error(result.stderr);
-		}
-
-		return result.stdout;
-	}
+	// 	return results;
+	// }
 }
 
 module.exports = DockerMachine;

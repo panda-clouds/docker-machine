@@ -2,10 +2,10 @@
   "name": "@panda-clouds/docker-machine",
   "scripts": {
     "pretest": "eslint .",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "description": "allows the use of docker-machine from node",
-  "version": "1.2.0",
+  "version": "1.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/panda-clouds/docker-machine.git"
@@ -20,12 +20,12 @@
   "engines": {
     "node": ">= 8"
   },
-  "dependencies": {
-    "execa": "^1.0.0"
-  },
   "devDependencies": {
     "@panda-clouds/eslint-config-panda-clouds": "^0.9.0",
     "jest": "^24.1.0",
     "eslint": "^5.14.1"
+  },
+  "dependencies": {
+    "@panda-clouds/parse-bash": "^2.0.0"
   }
 }
